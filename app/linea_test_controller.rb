@@ -11,27 +11,15 @@ class LineaTestController < UIViewController
     @bible = Bible[:niv]
   end
   
-  attr_reader :rocker, :label, :bible
+  attr_reader :rocker, :bible
 
   def viewWillAppear(animated)
     super
     nav.apply!
     debug "Application Launched"
     
-    margin = UIView.alloc.initWithFrame([[20, 200], [UIScreen.mainScreen.bounds.size.width-40, 50]])
-    margin.backgroundColor = color(:white)
-    margin.clipsToBounds = true
-    view.addSubview margin
-    
-    @label = UILabel.alloc.init
-    label.text = bible.verse("Esther", 8, 9).text
-    label.font = font(:base, 24)
-    
-    label.frame = [[0,0], [0,0]]
-    label.size = label.sizeThatFits(CGSizeMake(10000, 40))
-    label.origin = CGPointMake(0, (margin.size.height - label.size.height)/2)
-    margin.addSubview label
-
+    @verseView = VerseView.alloc.initWithVerse(bible.verse("Genesis", 1, 1))
+    view.addSubview(@verseView)
     @rocker = UIView.alloc.initWithFrame([[20, UIScreen.mainScreen.bounds.size.height - 150], [200, 50]])
     rocker.backgroundColor = color(:black)
     view.addSubview rocker
@@ -42,8 +30,7 @@ class LineaTestController < UIViewController
   
   def beginAnimatingLabel
     @labelTimer = EM.add_periodic_timer 0.005 do
-      x = label.frame.origin.x + labelSpeed
-      label.origin = CGPointMake(x, label.frame.origin.y) 
+      @verseView.pan(labelSpeed)
     end
   end
   
