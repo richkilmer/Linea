@@ -1,11 +1,11 @@
 class Bible
   Books = [
-    "Genesis", 
-    "Exodus", 
-    "Leviticus", 
-    "Numbers", 
+    "Genesis",
+    "Exodus",
+    "Leviticus",
+    "Numbers",
     "Deuteronomy",
-    "Joshua", 
+    "Joshua",
     "Judges",
     "Ruth",
     "1 Samuel",
@@ -26,8 +26,8 @@ class Bible
     "Jeremiah",
     "Lamentations",
     "Ezekiel",
-    "Daniel",      
-    "Hosea", 
+    "Daniel",
+    "Hosea",
     "Joel",
     "Amos",
     "Obadiah",
@@ -44,99 +44,99 @@ class Bible
     "Luke",
     "John",
     "Acts",
-    "Romans", 
+    "Romans",
     "1 Corinthians",
-    "2 Corinthians", 
-    "Galatians", 
-    "Ephesians", 
-    "Philippians", 
-    "Colossians", 
+    "2 Corinthians",
+    "Galatians",
+    "Ephesians",
+    "Philippians",
+    "Colossians",
     "1 Thessalonians",
-    "2 Thessalonians", 
-    "1 Timothy", 
-    "2 Timothy", 
-    "Titus", 
+    "2 Thessalonians",
+    "1 Timothy",
+    "2 Timothy",
+    "Titus",
     "Philemon",
-    "Hebrews", 
-    "James", 
-    "1 Peter", 
+    "Hebrews",
+    "James",
+    "1 Peter",
     "2 Peter",
-    "1 John", 
-    "2 John", 
-    "3 John", 
+    "1 John",
+    "2 John",
+    "3 John",
     "Jude",
     "Revelation"
   ]
-  
+
   BookAbbreviations = [
-    "Genesis", 
-    "Exodus", 
-    "Leviticus", 
-    "Numbers", 
-    "Deuteronomy",
-    "Joshua", 
-    "Judges",
+    "Gen",
+    "Exod",
+    "Lev",
+    "Num",
+    "Deut",
+    "Josh",
+    "Judg",
     "Ruth",
-    "1 Samuel",
-    "2 Samuel",
-    "1 Kings",
-    "2 Kings",
-    "1 Chronicles",
-    "2 Chronicles",
+    "1 Sam",
+    "2 Sam",
+    "1 Kgs",
+    "2 Kgs",
+    "1 Chr",
+    "2 Chr",
     "Ezra",
-    "Nehemiah",
-    "Esther",
+    "Neh",
+    "Esth",
     "Job",
-    "Psalms",
-    "Proverbs",
-    "Ecclesiastes",
-    "Song of Songs",
-    "Isaiah",
-    "Jeremiah",
-    "Lamentations",
-    "Ezekiel",
-    "Daniel",      
-    "Hosea", 
+    "Ps",
+    "Prov",
+    "Eccl",
+    "Song",
+    "Isa",
+    "Jer",
+    "Lam",
+    "Ezek",
+    "Dan",
+    "Hos",
     "Joel",
     "Amos",
-    "Obadiah",
+    "Obad",
     "Jonah",
     "Micah",
     "Nahum",
-    "Habakkuk",
-    "Zephaniah",
-    "Haggai",
-    "Zechariah",
-    "Malachi",
-    "Matthew",
+    "Hab",
+    "Zeph",
+    "Hag",
+    "Zech",
+    "Mal",
+    "Matt",
     "Mark",
     "Luke",
     "John",
     "Acts",
-    "Romans", 
-    "1 Corinthians",
-    "2 Corinthians", 
-    "Galatians", 
-    "Ephesians", 
-    "Philippians", 
-    "Colossians", 
-    "1 Thessalonians",
-    "2 Thessalonians", 
-    "1 Timothy", 
-    "2 Timothy", 
-    "Titus", 
-    "Philemon",
-    "Hebrews", 
-    "James", 
-    "1 Peter", 
-    "2 Peter",
-    "1 John", 
-    "2 John", 
-    "3 John", 
+    "Rom",
+    "1 Cor",
+    "2 Cor",
+    "Gal",
+    "Eph",
+    "Phil",
+    "Col",
+    "1 Ths",
+    "2 Ths",
+    "1 Tim",
+    "2 Tim",
+    "Titus",
+    "Phlm",
+    "Heb",
+    "James",
+    "1 Pet",
+    "2 Pet",
+    "1 Jn",
+    "2 Jn",
+    "3 Jn",
     "Jude",
-    "Revelation"  
+    "Rev"
   ]
-  
+
   class Verse
     attr_reader :bible, :book, :chapter, :verse, :text
     def initialize(bible, book, chapter, verse, text)
@@ -146,7 +146,7 @@ class Bible
       @verse = verse
       @text = text
     end
-    
+
     def next
       verse_count = bible.verse_count(book, chapter)
       if verse_count == verse
@@ -163,7 +163,7 @@ class Bible
       end
       next_verse
     end
-    
+
     def previous
       if verse == 1
         if chapter == 1
@@ -195,34 +195,34 @@ class Bible
     end
     @bibles[translation]
   end
-  
+
   attr_reader :translation
 
   def initialize(translation, data)
     @translation = translation
     @data = data
   end
-  
+
   def verse(book, chapter, verse)
     raise "Unknown bible book: #{book}" unless Books.include?(book)
     text = @data[book][chapter.to_s][verse.to_s]
     Verse.new(self, book, chapter.to_i, verse.to_i, text)
   end
-  
+
   def chapter_count(book)
     @data[book].keys.map {|chapter| chapter.to_i}.sort.last
   end
-  
+
   def verse_count(book, chapter)
     @data[book][chapter.to_s].keys.map {|verses| verses.to_i}.sort.last
   end
-  
+
   def inspect
     "Bible[:#{translation}]"
   end
-  
+
   def [](book)
     @data[book]
   end
-  
+
 end
