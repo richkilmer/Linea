@@ -68,6 +68,75 @@ class Bible
     "Revelation"
   ]
   
+  BookAbbreviations = [
+    "Genesis", 
+    "Exodus", 
+    "Leviticus", 
+    "Numbers", 
+    "Deuteronomy",
+    "Joshua", 
+    "Judges",
+    "Ruth",
+    "1 Samuel",
+    "2 Samuel",
+    "1 Kings",
+    "2 Kings",
+    "1 Chronicles",
+    "2 Chronicles",
+    "Ezra",
+    "Nehemiah",
+    "Esther",
+    "Job",
+    "Psalms",
+    "Proverbs",
+    "Ecclesiastes",
+    "Song of Songs",
+    "Isaiah",
+    "Jeremiah",
+    "Lamentations",
+    "Ezekiel",
+    "Daniel",      
+    "Hosea", 
+    "Joel",
+    "Amos",
+    "Obadiah",
+    "Jonah",
+    "Micah",
+    "Nahum",
+    "Habakkuk",
+    "Zephaniah",
+    "Haggai",
+    "Zechariah",
+    "Malachi",
+    "Matthew",
+    "Mark",
+    "Luke",
+    "John",
+    "Acts",
+    "Romans", 
+    "1 Corinthians",
+    "2 Corinthians", 
+    "Galatians", 
+    "Ephesians", 
+    "Philippians", 
+    "Colossians", 
+    "1 Thessalonians",
+    "2 Thessalonians", 
+    "1 Timothy", 
+    "2 Timothy", 
+    "Titus", 
+    "Philemon",
+    "Hebrews", 
+    "James", 
+    "1 Peter", 
+    "2 Peter",
+    "1 John", 
+    "2 John", 
+    "3 John", 
+    "Jude",
+    "Revelation"  
+  ]
+  
   class Verse
     attr_reader :bible, :book, :chapter, :verse, :text
     def initialize(bible, book, chapter, verse, text)
@@ -79,15 +148,20 @@ class Bible
     end
     
     def next
-      verse = bible.verse(book, chapter, verse + 1)
-      unless verse
-        verse = bible.verse(book, chapter+1, 1)
-        unless verse
-          index = Books.index(book)
-          index = -1 if index == 65
-          bible.verse(Books[index], 1, 1)
+      verse_count = bible.verse_count(book, chapter)
+      if verse_count == verse
+        chapter_count = bible.chapter_count(book)
+        if chapter_count == chapter
+          index = Books.index(book) + 1
+          index = 0 if index == 66
+          next_verse = bible.verse(Books[index], 1, 1)
+        else
+          next_verse = bible.verse(book, chapter + 1, 1)
         end
+      else
+        next_verse = bible.verse(book, chapter, verse + 1)
       end
+      next_verse
     end
     
     def previous
@@ -96,14 +170,15 @@ class Bible
           index = Books.index(book)
           previous_book = Books[index == 0 ? 65 : index - 1]
           previous_chapter = bible.chapter_count(previous_book)
-          previous_verse = bible.chapter_count(previous_book, previous_chapter)
-          bible.verse(previous_book, previous_chapter, previous_verse)
+          previous_verse = bible.verse_count(previous_book, previous_chapter)
+          prev_verse = bible.verse(previous_book, previous_chapter, previous_verse)
         else
-          bible.verse(book, chapter - 1, 1)
+          prev_verse = bible.verse(book, chapter - 1, 1)
         end
       else
-        bible.verse(book, chapter, verse - 1)
+        prev_verse = bible.verse(book, chapter, verse - 1)
       end
+      prev_verse
     end
   end
 
@@ -139,7 +214,7 @@ class Bible
   end
   
   def verse_count(book, chapter)
-    @book[book][chapter.to_s].keys.map {|verses| verses.to_i}.sort.last
+    @data[book][chapter.to_s].keys.map {|verses| verses.to_i}.sort.last
   end
   
   def inspect
