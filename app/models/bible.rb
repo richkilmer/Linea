@@ -146,6 +146,10 @@ class Bible
       @verse = verse
       @text = text
     end
+    
+    def to_s
+      "#{book} #{chapter}:#{verse}"
+    end
 
     def next
       verse_count = bible.verse_count(book, chapter)
@@ -173,7 +177,7 @@ class Bible
           previous_verse = bible.verse_count(previous_book, previous_chapter)
           prev_verse = bible.verse(previous_book, previous_chapter, previous_verse)
         else
-          prev_verse = bible.verse(book, chapter - 1, 1)
+          prev_verse = bible.verse(book, chapter - 1, bible.verse_count(book, chapter - 1))
         end
       else
         prev_verse = bible.verse(book, chapter, verse - 1)
