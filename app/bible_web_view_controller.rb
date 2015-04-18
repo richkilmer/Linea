@@ -31,11 +31,22 @@ class BibleWebViewController < UIViewController
    %[
     <html>
     <body>
-      <!-- Embedded Bible. https://biblia.com/plugins/embeddedbible -->
-      <biblia:bible layout="minimal" resource="esv" width="100%" height="100%" shareButton="false" startingReference="#{verse.book_biblia_abbreviation}#{verse.chapter}.#{verse.verse}"></biblia:bible>
-      <!-- If you’re including multiple Biblia widgets, you only need this script tag once -->
-      <script src="//biblia.com/api/logos.biblia.js"></script>
-      <script>logos.biblia.init();</script>
+    <!-- Embedded Bible. https://biblia.com/plugins/embeddedbible -->
+    <biblia:bible 
+       layout="minimal" 
+       resource="esv" 
+       width="100%" 
+       height="100%" 
+       historyButtons="false" 
+       navigationBox="false" 
+       resourcePicker="false" 
+       shareButton="false" 
+       textSizeButton="false" 
+       startingReference="#{verse.book_biblia_abbreviation}#{verse.chapter}.#{verse.verse}">
+       </biblia:bible>
+    <!-- If you’re including multiple Biblia widgets, you only need this script tag once -->
+    <script src="//biblia.com/api/logos.biblia.js"></script>
+    <script>logos.biblia.init();</script>
     </html>
     ]
   end
