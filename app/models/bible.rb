@@ -219,6 +219,14 @@ class Bible
     def to_s
       "#{book} #{chapter}:#{verse}"
     end
+    
+    def book_abbreviation
+      Bible::BookAbbreviations[Bible::Books.index(book)]
+    end
+    
+    def book_biblia_abbreviation
+      Bible::BibliaAbbreviations[Bible::Books.index(book)]
+    end
 
     def next
       verse_count = bible.verse_count(book, chapter)

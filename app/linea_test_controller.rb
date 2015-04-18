@@ -22,43 +22,50 @@ class LineaTestController < UIViewController
           font: font(:button, 20),
           action: "closeVersePressed:",
           layout:{bottom:15, width:80, right:20, height:40}
+
+    build :button, :expand,
+          title: "Expand",
+          target: self,
+          font: font(:button, 20),
+          action: "expandVersePressed:",
+          layout:{bottom:15, width:80, right:120, height:40}
           
     build :label, :verse,
           text: "VERSE", 
           align: :center,
           font: font(:base, 12),
-          layout:{right:155, bottom:60, height:15, width:90}    
+          layout:{right:255, bottom:60, height:15, width:90}    
 
     build :button, :previous_verse,
           title: "<",
           target: self,
           action: "previousVersePressed:",
-          layout:{bottom:15, width:40, right:200, height:40}
+          layout:{bottom:15, width:40, right:300, height:40}
 
     build :button, :next_verse,
           title: ">",
           target: self,
           action: "nextVersePressed:",
-          layout:{bottom:15, width:40, right:155, height:40}
+          layout:{bottom:15, width:40, right:255, height:40}
 
 
     build :label, :chapter,
           text: "CHAPTER", 
           align: :center,
           font: font(:base, 12),
-          layout:{right:260, bottom:60, height:15, width:90}    
+          layout:{right:360, bottom:60, height:15, width:90}    
 
     build :button, :previous_chapter,
           title: "<",
           target: self,
           action: "previousChapterPressed:",
-          layout:{bottom:15, width:40, right:305, height:40}
+          layout:{bottom:15, width:40, right:405, height:40}
 
     build :button, :next_chapter,
           title: ">",
           target: self,
           action: "nextChapterPressed:",
-          layout:{bottom:15, width:40, right:260, height:40}
+          layout:{bottom:15, width:40, right:360, height:40}
 
     build :label, :speed,
           text: "READ SPEED", 
@@ -157,6 +164,15 @@ class LineaTestController < UIViewController
   def slowerPressed(button)
     beginAnimatingLabel unless @verseTimer
     @verseSpeed += 0.2
+  end
+  
+  def expandVersePressed(button)
+    nav.modal bible_web_view_controller
+    bible_web_view_controller.showVerse(currentVerseView.verse)
+  end
+  
+  def bible_web_view_controller
+    @bible_web_view_controller ||= BibleWebViewController.new
   end
   
   def verse_chooser
