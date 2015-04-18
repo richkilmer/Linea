@@ -1,6 +1,11 @@
 CocoaMotion::Theme.define do
 
   CargoSenseColors.apply!
+  
+  color :turquoise, '1abc9c'
+  color :emerald, '16a085'
+  color :peter_river, '3498db'
+  color :belize_hole, '2980b9'
 
   # The Fonts
   # -------------------------------------------------------------------
@@ -11,6 +16,8 @@ CocoaMotion::Theme.define do
   font  :bold, 'Avenir-Heavy', (ipad? ? 18 : 12)
   font  :black, 'Avenir-Black', (ipad? ? 18 : 12)
   
+  font  :verse_reference, :base, 14
+  
   font  :button, :base, (ipad? ? 24 : 20)
   font  :button_bold, :bold, (ipad? ? 24 : 20)
   font  :button_black, :black, (ipad? ? 24 : 20)
@@ -18,32 +25,27 @@ CocoaMotion::Theme.define do
   # Buttons
   # -------------------------------------------------------------------
   
-  color :button, :turquoise
+  color :button, :peter_river
   color :button_disabled, :gray
   color :button_header, '23272B'
   
+  color :verse_reference, :belize_hole
+  
   color :activity_background, opacify(:black, 0.4)
+  
+  color :disabled_view, opacify(:white, 0.6)
 
   style :button, 
-        title_color: color(:white),
+        title_color: color(:belize_hole),
         font: font(:button),
-        background_color: color(:button),
-        corner_radius:4,
         tint_color: color(:white)
         
-  style :danger_button,
-        background_color: color(:red)
-        
-  style :home_button,
-        font: font(:button, ipad? ? 34 : 20),
-        multiline:true
-
   # Other controls
   # -------------------------------------------------------------------
   
   style :label,
         font: font(:base),
-        color: color(:white)
+        color: color(:gray_darkest)
         
   style :text_field,
         text_color: color(:gray_darkest),
