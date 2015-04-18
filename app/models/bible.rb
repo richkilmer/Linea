@@ -21,7 +21,7 @@ class Bible
     "Psalms",
     "Proverbs",
     "Ecclesiastes",
-    "Song of Songs",
+    "Song of Solomon",
     "Isaiah",
     "Jeremiah",
     "Lamentations",
@@ -184,8 +184,17 @@ class Bible
       end
       prev_verse
     end
-  end
 
+    def next_chapter
+      bible.verse(book, chapter, bible.verse_count(book, chapter)).next
+    end
+
+    def previous_chapter
+      p = bible.verse(book, chapter, 1).previous
+      bible.verse(p.book, p.chapter, 1)
+    end
+  end
+  
   def self.[](translation)
     @bibles ||= {}
     unless @bibles[translation]
@@ -214,10 +223,13 @@ class Bible
   end
 
   def chapter_count(book)
+    raise "Unknown book #{book}" unless @data[book]
     @data[book].keys.map {|chapter| chapter.to_i}.sort.last
   end
 
   def verse_count(book, chapter)
+    raise "Unknown book #{book}" unless @data[book]
+    raise "#{book} does not have chapter #{chapter}" unless @data[book][chapter.to_s]
     @data[book][chapter.to_s].keys.map {|verses| verses.to_i}.sort.last
   end
 
