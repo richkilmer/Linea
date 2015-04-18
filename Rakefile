@@ -21,10 +21,12 @@ Motion::Project::App.setup do |app|
   app.version = "1.0"
   app.short_version = "1.0"
   
-  app.name = 'Linea'
+  app.name = 'Linea Reader'
   app.detect_dependencies = true
 
   app.device_family = [:ipad, :iphone]
+  
+  app.icons = ["icon.png"]
 
   app.development do
     app.identifier = "org.monotheos.Linea"
