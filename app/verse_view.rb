@@ -1,6 +1,6 @@
 class VerseView < UIView
 
-  attr_reader :verse, :labels, :position, :verseLabels, :verseReferenceLabel, :verseScroller, :selectorView
+  attr_reader :verse, :labels, :position, :verseLabels, :verseReferenceLabel, :verseScroller, :selectorView, :clickButton
   attr_accessor :delegate
   
   VerticalOffset = 50
@@ -20,7 +20,7 @@ class VerseView < UIView
   def initWithVerse(verse, position: position)
     @verse = verse
     @position = position
-    initWithFrame([[20, position*80 + VerticalOffset], [UIScreen.mainScreen.bounds.size.width-40, 50]])
+    initWithFrame([[5, position*80 + VerticalOffset], [UIScreen.mainScreen.bounds.size.width-5, 50]])
     self.backgroundColor = color(:white)
     self.clipsToBounds = true
     
@@ -48,11 +48,27 @@ class VerseView < UIView
     createLabels
     updateVerseReference
     
-    clickButton = UIButton.buttonWithType(UIButtonTypeCustom)
+    @clickButton = UIButton.buttonWithType(UIButtonTypeCustom)
     clickButton.addTarget self, action:"press:", forControlEvents:UIControlEventTouchUpInside
     clickButton.frame = [[0,0], [frame.size.width, frame.size.height]]
     addSubview clickButton
+    
+    panGesture = UIPanGestureRecognizer.alloc.initWithTarget(self, action: "panGestureReceived:")
+    clickButton.addGestureRecognizer panGesture
+
     self
+  end
+
+  def panGestureReceived(recognizer)
+    translation = recognizer.translationInView clickButton
+    case recognizer.state
+    when UIGestureRecognizerStateBegan
+      @amountPanned = 0
+    when UIGestureRecognizerStateEnded
+    else
+      pan(translation.x - @amountPanned)
+      @amountPanned += (translation.x - @amountPanned)
+    end
   end
   
   PADDING = 20
