@@ -1,4 +1,4 @@
-class LineaTestController < UIViewController
+class LineaController < UIViewController
 
   include CocoaMotion::ViewControllerBehaviors
   
