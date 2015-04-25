@@ -24,7 +24,7 @@ class LineaController < UIViewController
           layout:{bottom:15, width:80, right:20, height:40}
 
     build :button, :expand,
-          title: "Expand",
+          title: "Biblia",
           target: self,
           font: font(:button, 20),
           action: "expandVersePressed:",

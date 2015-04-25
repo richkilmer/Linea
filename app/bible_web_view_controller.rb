@@ -30,13 +30,13 @@ class BibleWebViewController < UIViewController
   def bible_html(verse)
    %[
     <html>
-    <body>
+    <body style="margin:0px;">
     <!-- Embedded Bible. https://biblia.com/plugins/embeddedbible -->
     <biblia:bible 
        layout="minimal" 
        resource="esv" 
        width="100%" 
-       height="100%" 
+       height="960" 
        historyButtons="false" 
        navigationBox="false" 
        resourcePicker="false" 
