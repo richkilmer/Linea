@@ -63,8 +63,8 @@ CocoaMotion::Theme.define do
         }
         
   style :navigation_controller,
-        bar_tint_color: color(:black), 
-        bar_text_tint_color: color(:white)
+        bar_tint_color: color(:white), 
+        bar_text_tint_color: color(:black)
         
   style :activity_indicator,
         style: :large,

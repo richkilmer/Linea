@@ -92,7 +92,7 @@ class LineaController < UIViewController
           layout:{bottom:0, left: 0, right: 0, height: 100}
           
   end
-  
+
   attr_reader :rocker, :bible
 
   def viewWillAppear(animated)
