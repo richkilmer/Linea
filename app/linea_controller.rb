@@ -1,17 +1,17 @@
 class LineaController < UIViewController
 
   include CocoaMotion::ViewControllerBehaviors
-  
+
   DEBUG = true
 
   attr_reader :verseSpeed, :verseTimer, :verseViews, :panningViewPosition
-  
+
   def viewDidLoad
     super
     view.backgroundColor = color(:white)
     nav title:"Linea Bible Reader",
       right_button:{title:"Add Verse", target: self, action: "addVersePressed:"}
-    
+
     @bible = Bible[:esv]
     @verseViews = []
     @panningViewPosition = -1
@@ -29,12 +29,12 @@ class LineaController < UIViewController
           font: font(:button, 20),
           action: "expandVersePressed:",
           layout:{bottom:15, width:80, right:120, height:40}
-          
+
     build :label, :verse,
-          text: "VERSE", 
+          text: "VERSE",
           align: :center,
           font: font(:base, 12),
-          layout:{right:255, bottom:60, height:15, width:90}    
+          layout:{right:255, bottom:60, height:15, width:90}
 
     build :button, :previous_verse,
           title: "<",
@@ -50,10 +50,10 @@ class LineaController < UIViewController
 
 
     build :label, :chapter,
-          text: "CHAPTER", 
+          text: "CHAPTER",
           align: :center,
           font: font(:base, 12),
-          layout:{right:360, bottom:60, height:15, width:90}    
+          layout:{right:360, bottom:60, height:15, width:90}
 
     build :button, :previous_chapter,
           title: "<",
@@ -68,10 +68,10 @@ class LineaController < UIViewController
           layout:{bottom:15, width:40, right:360, height:40}
 
     build :label, :speed,
-          text: "READ SPEED", 
+          text: "READ SPEED",
           align: :center,
           font: font(:base, 12),
-          layout:{left:230, bottom:60, height:15, width:85}    
+          layout:{left:230, bottom:60, height:15, width:85}
 
     build :button, :slower,
           title: "-",
@@ -86,11 +86,11 @@ class LineaController < UIViewController
           layout:{bottom:15, width:40, left:275, height:40}
 
    addRocker
-          
+
     build :view, :disabled,
           background_color: color(:disabled_view),
           layout:{bottom:0, left: 0, right: 0, height: 100}
-          
+
   end
 
   attr_reader :rocker, :bible
@@ -100,7 +100,7 @@ class LineaController < UIViewController
     nav.apply!
     @verseSpeed = 0
   end
-  
+
   def addRocker
     @rocker = UIView.alloc.initWithFrame([[20, UIScreen.mainScreen.bounds.size.height - 120], [200, 40]])
     rocker.backgroundColor = color(:button)
@@ -114,7 +114,7 @@ class LineaController < UIViewController
     panGesture = UIPanGestureRecognizer.alloc.initWithTarget(self, action: "pan:")
     rocker.addGestureRecognizer panGesture
   end
-  
+
   def previousVersePressed(button)
     currentVerseView.previousVerse
   end
@@ -130,8 +130,10 @@ class LineaController < UIViewController
   def nextChapterPressed(button)
     currentVerseView.nextChapter
   end
-  
+
   def closeVersePressed(button)
+
+    LineaLog.instance.currentSession.event!(:close, currentVerseView.uuid, currentVerseView.verse)
     currentVerseView.removeFromSuperview
     verseViews.delete(currentVerseView)
     if verseViews.length == 0
@@ -143,10 +145,10 @@ class LineaController < UIViewController
         verseView.slidePosition
       end
       @panningViewPosition -= 1 unless @panningViewPosition == 0
-      currentVerseView.select        
+      currentVerseView.select
     end
   end
-  
+
   def addVersePressed(button)
     if verseViews.size == 10
       alert title:"Maximum Verses Reached", message:"You can only view ten verses at a time.  Please close an existing verse to add a new verse.", buttons:{okay:"Okay"} do |button|
@@ -155,26 +157,26 @@ class LineaController < UIViewController
       nav.modal verse_chooser
     end
   end
-  
+
   def fasterPressed(button)
     beginAnimatingLabel unless @verseTimer
     @verseSpeed -= 0.2
   end
-  
+
   def slowerPressed(button)
     beginAnimatingLabel unless @verseTimer
     @verseSpeed += 0.2
   end
-  
+
   def expandVersePressed(button)
     nav.modal bible_web_view_controller
     bible_web_view_controller.showVerse(currentVerseView.verse)
   end
-  
+
   def bible_web_view_controller
     @bible_web_view_controller ||= BibleWebViewController.new
   end
-  
+
   def verse_chooser
     @verse_chooser ||= begin
       chooser = VerseChooserController.new
@@ -187,29 +189,29 @@ class LineaController < UIViewController
       chooser
     end
   end
-  
+
   def currentVerseView
     panningViewPosition > -1 ? verseViews[panningViewPosition] : nil
   end
-  
+
   def verseViewSelected(verseView)
     currentVerseView.deselect if currentVerseView
     @panningViewPosition = verseView.position
     currentVerseView.select
     @disabled_view.hidden = true
   end
-  
+
   def beginAnimatingLabel
     @verseTimer = EM.add_periodic_timer 0.005 do
       currentVerseView.pan(verseSpeed)
     end
   end
-  
+
   def stopAnimatingLabel
     EM.cancel_timer verseTimer if verseTimer
     @verseTimer = nil
   end
-  
+
   def pan(recognizer)
     translation = recognizer.translationInView rocker
     case recognizer.state
