@@ -5,11 +5,12 @@ class LineaLog
   end
 
   def initialize
-    @events ||= []
+    @events ||= {}
+    @notes ||= []
   end
   
   def dump
-    @events.each do |event|
+    @events.each do |uuid, event|
       puts event.to_s
     end
     nil
@@ -19,24 +20,36 @@ class LineaLog
     instance.event!(action, uuid, verse)
   end
   
-  def self.note!(uuid, verse, body)
+  def self.note!(event_uuid, verse, body)
+    instance.note!(event_uuid, verse, body)
   end
 
   def event!(action, uuid, verse)
     case action
     when :open
-      @events << Event.new(uuid, verse)
+      @events[uuid] = Event.new(uuid, verse)
     when :close
-      event = @events.detect {|event| event.uuid == uuid}
-      event.close!(verse)
+      @events[uuid].close!(verse)
     end
   end
   
-  def note!(uuid, verse, body)
+  def note!(event_uuid, verse, body)
+    @notes << Note.new(event_uuid, verse, body)
+  end
+  
+  class Note
+    def initialize(event_uuid, verse, body)
+      @event_uuid = event_uuid
+      @translation = verse.bible.translation.to_s
+      @opened_at = Time.now
+      @book = verse.book
+      @chapter_number = verse.chapter
+      @verse_number = verse.verse
+      @body = body
+    end
   end
 
   class Event
-
     attr_reader :uuid, :translation
     attr_reader :opened_at, :opening_book, :opening_chapter_number, :opening_verse_number
     attr_reader :closed_at, :closing_book, :closing_chapter_number, :closing_verse_number
