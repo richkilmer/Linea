@@ -21,7 +21,7 @@ class VerseView < UIView
   def initWithVerse(verse, position: position)
 
     @uuid = CFUUIDCreateString(nil, CFUUIDCreate(nil))
-    LineaLog.instance.currentSession.event!(:open, uuid, verse)
+    LineaLog.event!(:open, uuid, verse)
 
     @verse = verse
     @position = position

@@ -132,8 +132,7 @@ class LineaController < UIViewController
   end
 
   def closeVersePressed(button)
-
-    LineaLog.instance.currentSession.event!(:close, currentVerseView.uuid, currentVerseView.verse)
+    LineaLog.event!(:close, currentVerseView.uuid, currentVerseView.verse)
     currentVerseView.removeFromSuperview
     verseViews.delete(currentVerseView)
     if verseViews.length == 0
