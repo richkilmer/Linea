@@ -8,12 +8,20 @@ class LineaLog
     @events ||= {}
     @notes ||= []
   end
+
+  def each_event(&block)
+    @events.values.each(&block)
+  end
   
   def dump
     @events.each do |uuid, event|
       puts event.to_s
     end
     nil
+  end
+  
+  def self.each_event(&block)
+    instance.each_event(&block)
   end
   
   def self.event!(action, uuid, verse)
@@ -71,11 +79,24 @@ class LineaLog
     end
 
     def opening_verse
-      Bible[@translation.to_sym].verse(@opening_book, @opening_chapter_number, @opening_verse_number)
+      @opening_verse ||= Bible[@translation.to_sym].verse(@opening_book, @opening_chapter_number, @opening_verse_number)
     end
 
     def closing_verse
-      Bible[@translation.to_sym].verse(@closing_book, @closing_chapter_number, @closing_verse_number)
+      @closing_verse ||= Bible[@translation.to_sym].verse(@closing_book, @closing_chapter_number, @closing_verse_number)
+    end
+    
+    def closed?
+      !!@closed_at
+    end
+    
+    def verses
+      return [opening_verse] unless closed?
+      result = [opening_verse]
+      while result.last != closing_verse
+        result << result.last.next
+      end
+      result
     end
 
     def to_s

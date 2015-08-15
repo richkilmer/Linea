@@ -227,6 +227,16 @@ class Bible
     def book_biblia_abbreviation
       Bible::BibliaAbbreviations[Bible::Books.index(book)]
     end
+    
+    def ==(verse)
+      unless verse.kind_of?(Verse)
+        raise "Verse is #{verse}"
+      end
+      @bible == verse.bible &&
+      @book == verse.book &&
+      @chapter == verse.chapter &&
+      @verse == verse.verse
+    end
 
     def next
       verse_count = bible.verse_count(book, chapter)

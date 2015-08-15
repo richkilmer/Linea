@@ -10,6 +10,7 @@ class LineaController < UIViewController
     super
     view.backgroundColor = color(:white)
     nav title:"Linea Bible Reader",
+      left_button:{title:"Log", target: self, action: "logPressed:"},
       right_button:{title:"Add Verse", target: self, action: "addVersePressed:"}
 
     @bible = Bible[:esv]
@@ -147,6 +148,10 @@ class LineaController < UIViewController
       currentVerseView.select
     end
   end
+  
+  def logPressed(button)
+    nav.modal log_controller
+  end
 
   def addVersePressed(button)
     if verseViews.size == 10
@@ -174,6 +179,10 @@ class LineaController < UIViewController
 
   def bible_web_view_controller
     @bible_web_view_controller ||= BibleWebViewController.new
+  end
+  
+  def log_controller
+    @log_controller ||= LogController.new
   end
 
   def verse_chooser
