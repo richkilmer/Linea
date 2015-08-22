@@ -1,20 +1,54 @@
 class LineaLog
 
+  class Session
+    
+    NEW_SESSION_DELAY = 7200 #seconds
+
+    attr_reader :starts_at, :events, :name
+
+    def initialize(name = Time.now.strftime("%A %B %d, %Y - %l:%M%P"))
+      @starts_at = Time.now
+      @events ||= {}
+      @notes ||= []
+      @name = name
+    end
+    
+    def last_updated_at
+      @events.empty? ? starts_at : events.values.last.opened_at
+    end
+    
+    def close!
+      @events.each do |event|
+        event.close! unless event.closed?
+      end
+    end
+
+  end
+
   def self.instance
     @instance ||= LineaLog.new
   end
 
   def initialize
-    @events ||= {}
-    @notes ||= []
+    @sessions = []
+    @current_session = Session.new()
+  end
+  
+  def current_session
+    @sessions << Session.new if @sessions.empty?
+    if Time.now - @sessions.last.last_updated_at > Session::NEW_SESSION_DELAY
+      @sessions.last.close!
+      @sessions << Session.new
+    end
+    @sessions.last
   end
 
   def each_event(&block)
-    @events.values.each(&block)
+    current_session.events.values.each(&block)
   end
   
   def dump
-    @events.each do |uuid, event|
+    current_session.events.each do |uuid, event|
       puts event.to_s
     end
     nil
@@ -35,14 +69,24 @@ class LineaLog
   def event!(action, uuid, verse)
     case action
     when :open
-      @events[uuid] = Event.new(uuid, verse)
+      current_session.events[uuid] = Event.new(uuid, verse)
     when :close
-      @events[uuid].close!(verse)
+      event = current_session.events[uuid]
+      if event
+        event.close!(verse)
+      else
+        if @sessions[-2]
+          event = current_session.events[uuid]
+          if event
+            event.close!(verse)
+          end
+        end
+      end
     end
   end
   
   def note!(event_uuid, verse, body)
-    @notes << Note.new(event_uuid, verse, body)
+    current_session.notes << Note.new(event_uuid, verse, body)
   end
   
   class Note
@@ -71,11 +115,17 @@ class LineaLog
       @opening_verse_number = verse.verse
     end
     
-    def close!(verse)
+    def close!(verse=nil)
       @closed_at = Time.now
-      @closing_book = verse.book
-      @closing_chapter_number = verse.chapter
-      @closing_verse_number = verse.verse
+      if verse
+        @closing_book = verse.book
+        @closing_chapter_number = verse.chapter
+        @closing_verse_number = verse.verse
+      else
+        @closing_book = @opening_book
+        @closing_chapter_number = @closing_chapter_number
+        @closing_verse_number = @closing_verse_number
+      end
     end
 
     def opening_verse
