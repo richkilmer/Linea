@@ -38,4 +38,8 @@ Motion::Project::App.setup do |app|
 
   app.frameworks += ['CoreLocation']
 
+  app.pods do
+    pod 'NanoStore', '~> 2.6.0'
+  end
+
 end
