@@ -10,7 +10,7 @@ class LineaController < UIViewController
     super
     view.backgroundColor = color(:white)
     nav title:"Linea Bible Reader",
-      left_button:{title:"Log", target: self, action: "logPressed:"},
+      left_button:{title:"History", target: self, action: "logPressed:"},
       right_button:{title:"Add Verse", target: self, action: "addVersePressed:"}
 
     @bible = Bible[:esv]
@@ -150,7 +150,7 @@ class LineaController < UIViewController
   end
   
   def logPressed(button)
-    nav.modal log_controller
+    nav.push log_sessions_controller
   end
 
   def addVersePressed(button)
@@ -181,8 +181,8 @@ class LineaController < UIViewController
     @bible_web_view_controller ||= BibleWebViewController.new
   end
   
-  def log_controller
-    @log_controller ||= LogController.new
+  def log_sessions_controller
+    LogSessionsController.new
   end
 
   def verse_chooser

@@ -2,11 +2,12 @@ class LogController < UIViewController
 
   include CocoaMotion::ViewControllerBehaviors
   
+  attr_accessor :session
+  
   def viewDidLoad
     super
     view.backgroundColor = color(:white)
-    nav title:"Linea Log", 
-      left_button:{title:"Close", action:->{nav.dismiss}}
+    nav title:"Session"
   end
 
   def loadView
@@ -36,7 +37,7 @@ class LogController < UIViewController
   
   def log_html
     log_entries = []
-    LineaLog.each_event do |event|
+    session.events.each do |event|
       log_entries << %[
         <div class="log-entry">
           <p>#{event.opened_at}</p>
